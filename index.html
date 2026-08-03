@@ -1,0 +1,424 @@
+DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday My Love! ❤️</title>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #feada6 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Countdown Screen Overlay */
+        #countdown-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #countdown-screen h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        #timer {
+            font-size: 5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: fixed;
+            font-size: 20px;
+            color: rgba(255, 77, 109, 0.7);
+            animation: float 6s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            z-index: 1;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: none; /* Countdown শেষ হলে দৃশ্যমান হবে */
+        }
+
+        h1 {
+            color: #ff3366;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* Music Toggle Button */
+        .music-btn {
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3);
+        }
+
+        /* Profile Photo Frame */
+        .photo-frame {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            border: 4px solid #ff3366;
+            overflow: hidden;
+            box-shadow: 0 8px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Romantic Message Box */
+        .message-box {
+            background: #fff5f7;
+            border-left: 5px solid #ff3366;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: #444;
+            margin-bottom: 25px;
+        }
+
+        /* Video Section */
+        .video-section {
+            margin: 25px 0;
+        }
+
+        .video-section h3 {
+            color: #ff3366;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            background: #000;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+            border-radius: 15px;
+            max-height: 350px;
+            object-fit: cover;
+        }
+
+        /* Action Buttons Section */
+        .action-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, #ff3366, #ff6b81);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-gallery {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .hidden-surprise {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #ffe6ea;
+            border-radius: 15px;
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+
+        /* Gallery Modal Pop-up */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff3366;
+            cursor: pointer;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ১. কাউন্টডাউন স্ক্রিন -->
+    <div id="countdown-screen">
+        <h2>তোমার জন্য একটি বিশেষ সারপ্রাইজ অপেক্ষা করছে... ❤️</h2>
+        <div id="timer">3</div>
+    </div>
+
+    <!-- ব্যাকগ্রাউন্ড অডিও -->
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ২. মূল কন্টেইনার -->
+    <div class="container" id="main-content">
+        <button class="music-btn" onclick="toggleMusic()">🎵 গান চালু / বন্ধ করো</button>
+
+        <div class="photo-frame">
+            <img src="photo.jpg" alt="Birthday Special">
+        </div>
+
+        <h1>শুভ জন্মদিন, [নাজু]! 🎂💖</h1>
+        <p style="color: #666; margin-bottom: 20px;">আমার জীবনের সবচেয়ে বিশেষ মানুষটিকে জানাই অনেক অনেক ভালোবাসা!</p>
+
+        <div class="message-box">
+            <p>প্রিয় [নাজু],</p>
+            <p>তোমার আজকের দিনটি অনেক আনন্দে কাটুক। তুমি আমার জীবনে আসার পর থেকে প্রতিটি দিন সুন্দর হয়ে উঠেছে। সব সময় হাসিখুশি থেকো! 💕</p>
+        </div>
+
+        <!-- ৩. ভিডিও সেকশন -->
+        <div class="video-section">
+            <h3>🎬 আমাদের কিছু সুন্দর মুহূর্ত</h3>
+            <div class="video-wrapper">
+                <!-- তোমার ভিডিও ফাইলের নাম (যেমন: video.mp4) নিচে বসাবে -->
+                <video controls src="birthday video.mp4" poster="photo5.jpg"></video>
+            </div>
+        </div>
+
+        <!-- অ্যাকশন বোতামসমূহ -->
+        <div class="action-btns">
+            <button class="btn-custom btn-gallery" onclick="openGallery()">📸 আমাদের কিছু স্মৃতি</button>
+            <button class="btn-custom" onclick="showSurprise()">🎁 বিশেষ উপহার</button>
+        </div>
+
+        <div id="surprise" class="hidden-surprise">
+            <h3>❤️ চিরকাল এভাবে পাশে থেকো ❤️</h3>
+            <p style="margin-top: 10px;">"তোমার সাথেই কাটুক আমার প্রতিটি দিন।"</p>
+            <p style="margin-top: 15px; font-weight: bold; color: #ff3366;">হ! 🎈🎉</p>
+        </div>
+    </div>
+
+    <!-- ৪. ফটো গ্যালারি পপ-আপ (Modal) -->
+    <div id="galleryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeGallery()">&times;</span>
+            <h3 style="color: #6c5ce7;">আমাদের মধুর কিছু মুহূর্ত ✨</h3>
+            <div class="gallery-grid">
+                <!-- গ্যালারির অন্যান্য ছবির নামগুলো এখানে বসাও -->
+                <img src="photo1.jpg" alt="Memory 1">
+                <img src="photo2.jpg" alt="Memory 2">
+                <img src="photo3.jpg" alt="Memory 3">
+                <img src="photo4.jpg" alt="Memory 4">
+                <img src="photo5.jpg" alt="Memory 4">
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ৩ সেকেন্ডের কাউন্টডাউন লজিক
+        let count = 3;
+        const timerElement = document.getElementById('timer');
+        const countdownScreen = document.getElementById('countdown-screen');
+        const mainContent = document.getElementById('main-content');
+
+        const countdownInterval = setInterval(() => {
+            count--;
+            if (count > 0) {
+                timerElement.textContent = count;
+            } else {
+                clearInterval(countdownInterval);
+                countdownScreen.style.opacity = '0';
+                setTimeout(() => {
+                    countdownScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    triggerConfetti();
+                }, 800);
+            }
+        }, 1000);
+
+        // ভাসমান হার্ট অ্যানিমেশন
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+            document.body.appendChild(heart);
+
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 300);
+
+        // কনফেটি অ্যানিমেশন
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // সারপ্রাইজ মেসেজ দেখানো
+        function showSurprise() {
+            const surprise = document.getElementById('surprise');
+            surprise.style.display = surprise.style.display === 'block' ? 'none' : 'block';
+            triggerConfetti();
+        }
+
+        // গ্যালারি খোলা ও বন্ধ করা
+        function openGallery() {
+            document.getElementById('galleryModal').style.display = 'flex';
+        }
+
+        function closeGallery() {
+            document.getElementById('galleryModal').style.display = 'none';
+        }
+
+        // মিউজিক অন/অফ
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+    </script>
+</body>
+</html>
