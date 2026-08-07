@@ -690,9 +690,9 @@
     <!-- Header Navigation & View Option Switcher -->
     <header>
         <div class="view-switcher">
-            <button class="view-btn active" onclick="switchView('all')">🌟 All Views</button>
-            <button class="view-btn" onclick="switchView('photos')">📸 Photos Only</button>
-            <button class="view-btn" onclick="switchView('videos')">🎬 Videos Only</button>
+            <button class="view-btn active" onclick="switchView(this, 'all')">🌟 All Views</button>
+            <button class="view-btn" onclick="switchView(this, 'photos')">📸 Photos Only</button>
+            <button class="view-btn" onclick="switchView(this, 'videos')">🎬 Videos Only</button>
         </div>
         <nav>
             <a href="#home">HOME</a>
@@ -882,7 +882,7 @@
         <p class="section-subtitle curvy-sub" style="font-size: 1.6rem;">Sealed envelopes of unending romance...</p>
         <div class="envelope-grid-10">
             <div class="envelope-card-10 anim-box"><img src="propose14.jpg" alt=""><div class="curvy-hand" style="font-size:1.4rem; margin-top:8px;">Dearest Najma 💕</div></div>
-            <div class="envelope-card-10 anim-box"><img src="photo3.jpg" alt=""><div class="curvy-hand" style="font-size:1.4rem; margin-top:8px;">Forever Yours ✨</div></div>
+            <div class="envelope-card-10 anim-box"><img src="nabadwip.jpg" alt=""><div class="curvy-hand" style="font-size:1.4rem; margin-top:8px;">Forever Yours ✨</div></div>
         </div>
     </section>
 
@@ -899,7 +899,7 @@
                 <div class="gallery-card"><img src="photo11.jpg" alt=""></div>
                 <div class="gallery-card"><img src="photo2.jpg" alt=""></div>
                 <div class="gallery-card"><img src="photo3.jpg" alt=""></div>
-                <div class="gallery-card"><img src="photo4.jpg" alt=""></div>
+                <div class="gallery-card"><img src="nabadwip5jpg" alt=""></div>
                 <!-- Loop Duplicate -->
                 <div class="gallery-card"><img src="photo5.jpg" alt=""></div>
                 <div class="gallery-card"><img src="photo1.jpg" alt=""></div>
@@ -924,7 +924,7 @@
         <div style="margin-bottom: 40px;" class="anim-box">
             <h3 class="curvy-sub" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;">Cinematic Frame</h3>
             <div class="video-container-1">
-                <video controls poster="najubabu.jpg">
+                <video controls poster="nabadwip2.jpg">
                     <source src="LV.mp4" type="video/mp4">
                 </video>
             </div>
@@ -936,7 +936,7 @@
             <div class="tv-container-2">
                 <div class="tv-screen">
                     <video controls poster="sofick.jpg">
-                        <source src="LV.mp4" type="video/mp4">
+                        <source src="video2.mp4" type="video/mp4">
                     </video>
                 </div>
             </div>
@@ -948,7 +948,7 @@
             <div class="neon-video-3">
                 <div class="neon-video-screen">
                     <video controls poster="video3photo.jpg">
-                        <source src="LV.mp4" type="video/mp4">
+                        <source src="video3.mp4" type="video/mp4">
                     </video>
                 </div>
             </div>
@@ -1025,23 +1025,30 @@
 
     <script>
         // --- VIEW SWITCHER LOGIC ---
-        function switchView(type) {
+        /**
+         * @param {HTMLElement} btnElement
+         * @param {string} type
+         */
+        function switchView(btnElement, type) {
             const buttons = document.querySelectorAll('.view-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
 
             const photoSections = document.querySelectorAll('.photo-section');
             const videoSections = document.querySelectorAll('.video-section');
 
             if (type === 'all') {
-                photoSections.forEach(s => s.style.display = 'block');
-                videoSections.forEach(s => s.style.display = 'block');
+                photoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'block');
+                videoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'block');
             } else if (type === 'photos') {
-                photoSections.forEach(s => s.style.display = 'block');
-                videoSections.forEach(s => s.style.display = 'none');
+                photoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'block');
+                videoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'none');
             } else if (type === 'videos') {
-                photoSections.forEach(s => s.style.display = 'none');
-                videoSections.forEach(s => s.style.display = 'block');
+                photoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'none');
+                videoSections.forEach(s => (/** @type {HTMLElement} */ (s)).style.display = 'block');
             }
         }
 
@@ -1053,7 +1060,7 @@
                 threshold: 0.15
             };
 
-            const observer = new IntersectionObserver((entries, observer) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
@@ -1069,8 +1076,9 @@
         // --- INTERACTIVE HEART CLICK REVEAL ---
         function revealCoupleName() {
             const displayBox = document.getElementById('coupleDisplayBox');
-            displayBox.style.display = 'block';
+            if (displayBox) displayBox.style.display = 'block';
             
+            // @ts-ignore
             confetti({
                 particleCount: 120,
                 spread: 80,
@@ -1085,7 +1093,11 @@
         const roses = ['🌹', '🌸', '💮', '💖'];
         const birds = ['🕊️', '✨', '🦋'];
 
+        /**
+         * @param {string} type
+         */
         function create3DParticle(type) {
+            if (!particleContainer) return;
             const el = document.createElement('div');
             if (type === 'rose') {
                 el.classList.add('rose-3d');
@@ -1111,6 +1123,10 @@
         }
 
         // --- SPARKLE CURSOR ---
+        /**
+         * @param {number} x
+         * @param {number} y
+         */
         function addSparkle(x, y) {
             const sparkle = document.createElement('div');
             sparkle.classList.add('sparkle');
@@ -1134,17 +1150,21 @@
         // --- MODAL CONTROL ---
         function openModal() {
             const modal = document.getElementById('secretModal');
-            modal.style.display = 'flex';
-            modal.scrollTop = 0; 
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.scrollTop = 0; 
+            }
             
             var duration = 3500;
             var end = Date.now() + duration;
 
             (function frame() {
+                // @ts-ignore
                 confetti({
                     particleCount: 8, angle: 60, spread: 60, origin: { x: 0, y: 0.7 },
                     colors: ['#ff2a6d', '#ff758c', '#ffffff'], zIndex: 10005
                 });
+                // @ts-ignore
                 confetti({
                     particleCount: 8, angle: 120, spread: 60, origin: { x: 1, y: 0.7 },
                     colors: ['#ff2a6d', '#ff758c', '#ffffff'], zIndex: 10005
@@ -1154,19 +1174,24 @@
         }
 
         function closeModal() {
-            document.getElementById('secretModal').style.display = 'none';
+            const modal = document.getElementById('secretModal');
+            if (modal) modal.style.display = 'none';
         }
 
+        /**
+         * @param {MouseEvent} event
+         */
         window.onclick = function(event) {
             let modal = document.getElementById('secretModal');
-            if (event.target == modal) modal.style.display = "none";
+            if (event.target === modal && modal) modal.style.display = "none";
         }
 
         // --- AUDIO MUSIC CONTROL ---
-        const music = document.getElementById('bgMusic');
+        const music = /** @type {HTMLAudioElement} */ (document.getElementById('bgMusic'));
         const musicBtn = document.getElementById('musicBtn');
         
         function toggleMusic() {
+            if (!music || !musicBtn) return;
             if (music.paused) {
                 music.play();
                 musicBtn.innerText = '⏸️';
@@ -1178,33 +1203,36 @@
 
         // --- PASSWORD LOGIN UNLOCK & VIEW OPTIONS ---
         function checkPassword() {
-            const inputPass = document.getElementById('secretInput').value;
+            const inputField = /** @type {HTMLInputElement} */ (document.getElementById('secretInput'));
+            const inputPass = inputField ? inputField.value : '';
             const errorMsg = document.getElementById('errorMsg');
             const unlockScreen = document.getElementById('passwordUnlockScreen');
             const correctPassword = "SofickMyLove"; 
 
-            if (inputPass === correctPassword) {
-                errorMsg.style.display = 'none';
+            if (inputPass === correctPassword && unlockScreen) {
+                if (errorMsg) errorMsg.style.display = 'none';
                 unlockScreen.style.opacity = '0';
                 
                 setTimeout(() => {
                     unlockScreen.style.display = 'none';
+                    // @ts-ignore
                     confetti({
                         particleCount: 150, spread: 100, origin: { y: 0.5 },
                         colors: ['#ff0055', '#ff2a6d', '#ffffff'], zIndex: 10005
                     });
-                    if(music.paused) {
-                        music.play().catch(e => console.log("Audio autoplay prevented"));
-                        document.getElementById('musicBtn').innerText = '⏸️';
+                    if(music && music.paused) {
+                        music.play().catch(() => console.log("Audio autoplay prevented"));
+                        if (musicBtn) musicBtn.innerText = '⏸️';
                     }
                 }, 500);
             } else {
-                errorMsg.style.display = 'block';
-                const inputField = document.getElementById('secretInput');
-                inputField.style.transform = 'translateX(-10px)';
-                setTimeout(() => inputField.style.transform = 'translateX(10px)', 100);
-                setTimeout(() => inputField.style.transform = 'translateX(-10px)', 200);
-                setTimeout(() => inputField.style.transform = 'translateX(0)', 300);
+                if (errorMsg) errorMsg.style.display = 'block';
+                if (inputField) {
+                    inputField.style.transform = 'translateX(-10px)';
+                    setTimeout(() => inputField.style.transform = 'translateX(10px)', 100);
+                    setTimeout(() => inputField.style.transform = 'translateX(-10px)', 200);
+                    setTimeout(() => inputField.style.transform = 'translateX(0)', 300);
+                }
             }
         }
     </script>
